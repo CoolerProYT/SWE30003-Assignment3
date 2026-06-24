@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Register – Shaden TCG Shop</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card" style="max-width:540px">
+        <div class="auth-header">
+            <div class="auth-logo">⚔ SHADEN TCG SHOP</div>
+            <div class="auth-subtitle">Create your account</div>
+        </div>
+        <div class="auth-body">
+            <div class="alert alert-danger" th:if="${registerError}" th:text="${registerError}"></div>
+
+            <form th:action="@{/auth/register}" method="post" id="regForm">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input name="fullName" type="text" class="form-control"
+                               required maxlength="100" placeholder="Jane Smith"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input name="email" type="email" class="form-control"
+                               required placeholder="you@example.com"/>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Phone *</label>
+                        <input name="phone" type="tel" class="form-control"
+                               required pattern="[0-9+\-\s]{7,15}" placeholder="0412-345-678"/>
+                    </div>
+                    <div class="form-group" style="grid-column:1/-1">
+                        <label class="form-label" style="color:var(--primary); font-weight:600">Default Delivery Address</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Street *</label>
+                    <input name="street" type="text" class="form-control"
+                           required placeholder="45 Oak Avenue"/>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Suburb *</label>
+                        <input name="suburb" type="text" class="form-control" required placeholder="Richmond"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State *</label>
+                        <select name="state" class="form-control form-select" required>
+                            <option value="">Select…</option>
+                            <option>VIC</option><option>NSW</option><option>QLD</option>
+                            <option>WA</option><option>SA</option><option>TAS</option>
+                            <option>ACT</option><option>NT</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Postcode *</label>
+                    <input name="postcode" type="text" class="form-control"
+                           required pattern="[0-9]{4}" placeholder="3121" maxlength="4"/>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Password * <span class="form-text">(min 6)</span></label>
+                        <input id="pw" name="password" type="password" class="form-control" required minlength="6"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password *</label>
+                        <input id="cpw" name="confirmPassword" type="password" class="form-control" required/>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;justify-content:center">
+                    Create Account
+                </button>
+            </form>
+
+            <hr class="divider"/>
+            <p style="text-align:center;font-size:.875rem;color:var(--text-muted)">
+                Already have an account? <a th:href="@{/auth/login}" style="color:var(--primary);font-weight:600">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('regForm').addEventListener('submit', function(e) {
+    if (document.getElementById('pw').value !== document.getElementById('cpw').value) {
+        e.preventDefault(); alert('Passwords do not match.');
+    }
+});
+</script>
+</body>
+</html>

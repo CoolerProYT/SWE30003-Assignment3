@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin – Orders')}"></head>
+<body>
+<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+<div class="page-content container">
+    <h1 class="page-title">All Orders</h1>
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-danger"  th:if="${errorMessage}"   th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>#</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}" th:text="'#' + ${order.id}"></a></td>
+                    <td th:text="${order.customer.fullName}"></td>
+                    <td th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy HH:mm')}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></td>
+                    <td>
+                        <span class="badge" th:classappend="'badge-' + ${#strings.toLowerCase(order.status)}"
+                              th:text="${order.status}"></span>
+                    </td>
+                    <td>
+                        <form th:if="${order.status.name() == 'PENDING'}"
+                              th:action="@{/admin/orders/{id}/confirm(id=${order.id})}" method="post">
+                            <button class="btn btn-sm btn-success">Confirm</button>
+                        </form>
+                        <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline">View</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
