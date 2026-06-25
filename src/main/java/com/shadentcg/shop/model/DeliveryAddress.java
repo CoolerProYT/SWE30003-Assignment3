@@ -3,21 +3,9 @@ package com.shadentcg.shop.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-/**
- * Data-holder for a customer's delivery address (A2 data-holder class).
- *
- * <p>Responsibilities (from A2 CRC card):
- * <ul>
- *   <li>Hold structured address fields (street, suburb, state, postcode, country)</li>
- *   <li>Provide formatted address string for display and shipment records</li>
- * </ul>
- *
- * <p>A customer may have 1..* DeliveryAddresses; the first is treated as default.
- */
 @Entity
 @Table(name = "delivery_addresses")
 public class DeliveryAddress {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,55 +36,84 @@ public class DeliveryAddress {
     @Column(nullable = false)
     private boolean isDefault = false;
 
-    // ── Constructors ──────────────────────────────────────────────────
-
-    public DeliveryAddress() {}
-
-    public DeliveryAddress(String street, String suburb, String state,
-                           String postcode, String country) {
-        this.street   = street;
-        this.suburb   = suburb;
-        this.state    = state;
-        this.postcode = postcode;
-        this.country  = country;
+    public DeliveryAddress() {
     }
 
-    // ── Business logic ────────────────────────────────────────────────
+    public DeliveryAddress(String street, String suburb, String state, String postcode, String country) {
+        this.street = street;
+        this.suburb = suburb;
+        this.state = state;
+        this.postcode = postcode;
+        this.country = country;
+    }
 
-    /**
-     * Returns the full formatted address string used in orders and shipments.
-     *
-     * @return e.g. "123 Main St, Hawthorn VIC 3122, Australia"
-     */
     public String getFormattedAddress() {
         return street + ", " + suburb + " " + state + " " + postcode + ", " + country;
     }
 
-    // ── Getters & Setters ─────────────────────────────────────────────
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Customer getCustomer() { return customer; }
-    public void setCustomer(Customer customer) { this.customer = customer; }
+    public Customer getCustomer() {
+        return customer;
+    }
 
-    public String getStreet() { return street; }
-    public void setStreet(String street) { this.street = street; }
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-    public String getSuburb() { return suburb; }
-    public void setSuburb(String suburb) { this.suburb = suburb; }
+    public String getStreet() {
+        return street;
+    }
 
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-    public String getPostcode() { return postcode; }
-    public void setPostcode(String postcode) { this.postcode = postcode; }
+    public String getSuburb() {
+        return suburb;
+    }
 
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
 
-    public boolean isDefault() { return isDefault; }
-    public void setDefault(boolean aDefault) { isDefault = aDefault; }
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
 
     @Override
     public String toString() {

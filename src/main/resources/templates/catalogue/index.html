@@ -1,73 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/layout :: head('Catalogue')}"></head>
-<body>
-<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+    <head th:replace="~{fragments/layout :: head('Catalogue')}"></head>
+    <body>
+        <div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
 
-<div class="page-content container">
-    <div class="flex justify-between items-center mb-2" style="flex-wrap:wrap; gap:1rem">
-        <h1 class="page-title" style="margin:0">Product Catalogue</h1>
+        <div class="page-content container">
+            <div class="flex justify-between items-center mb-2" style="flex-wrap:wrap; gap:1rem">
+                <h1 class="page-title" style="margin:0">Product Catalogue</h1>
 
-        <!-- Search bar -->
-        <form th:action="@{/catalogue}" method="get" class="search-bar" style="min-width:280px">
-            <input name="keyword" type="text" placeholder="Search products..."
-                   th:value="${keyword}"/>
-            <button type="submit" class="btn btn-primary btn-sm">Search</button>
-            <a th:if="${keyword != null}" th:href="@{/catalogue}" class="btn btn-sm" style="color:var(--text-muted)">✕</a>
-        </form>
-    </div>
-
-    <!-- Alerts -->
-    <div class="alert alert-success" th:if="${cartSuccess}" th:text="${cartSuccess}"></div>
-    <div class="alert alert-danger"  th:if="${cartError}"   th:text="${cartError}"></div>
-
-    <!-- Category filter pills -->
-    <div class="filter-pills">
-        <a th:href="@{/catalogue}" class="pill" th:classappend="${selectedCategory == null and keyword == null} ? 'active'">All</a>
-        <a th:each="cat : ${categories}"
-           th:href="@{/catalogue(category=${cat.id})}"
-           class="pill"
-           th:classappend="${selectedCategory == cat.id} ? 'active'"
-           th:text="${cat.name}"></a>
-    </div>
-
-    <!-- Results info -->
-    <p th:if="${keyword != null}" class="text-muted mb-1"
-       th:text="'Search results for: ' + ${keyword} + ' (' + ${#lists.size(products)} + ' found)'"></p>
-
-    <!-- Product grid -->
-    <div th:if="${#lists.isEmpty(products)}" class="card" style="text-align:center; padding:3rem; color:var(--text-muted)">
-        <p>No products found.</p>
-        <a th:href="@{/catalogue}" class="btn btn-primary mt-2">View all products</a>
-    </div>
-
-    <div class="product-grid" th:if="${!#lists.isEmpty(products)}">
-        <div th:each="product : ${products}" class="product-card">
-            <div class="product-card-img">🃏</div>
-            <div class="product-card-body">
-                <div class="product-card-category" th:text="${product.category.name}"></div>
-                <div class="product-card-name" th:text="${product.name}"></div>
-                <div th:if="${product.description}" class="text-muted"
-                     style="font-size:0.8rem; margin-bottom:0.5rem; line-height:1.4"
-                     th:text="${#strings.abbreviate(product.description, 80)}"></div>
-                <div class="product-card-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
+                <form th:action="@{/catalogue}" method="get" class="search-bar" style="min-width:280px">
+                    <input name="keyword" type="text" placeholder="Search products..." th:value="${keyword}"/>
+                    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                    <a th:if="${keyword != null}" th:href="@{/catalogue}" class="btn btn-sm" style="color:var(--text-muted)">✕</a>
+                </form>
             </div>
-            <div class="product-card-footer flex justify-between items-center">
-                <span class="stock-badge"
-                      th:classappend="${product.stockQuantity > 10} ? 'stock-ok' : (${product.stockQuantity > 0} ? 'stock-low' : 'stock-out')"
-                      th:text="${product.stockQuantity > 10} ? 'In Stock' : (${product.stockQuantity > 0} ? 'Low Stock' : 'Out of Stock')"></span>
-                <div class="flex gap-1">
-                    <a th:href="@{/catalogue/{id}(id=${product.id})}" class="btn btn-sm btn-outline">View</a>
-                    <form th:if="${product.available}" sec:authorize="isAuthenticated()"
-                          th:action="@{/cart/add}" method="post" style="margin:0">
-                        <input type="hidden" name="productId" th:value="${product.id}"/>
-                        <input type="hidden" name="quantity" value="1"/>
-                        <button type="submit" class="btn btn-sm btn-accent">+ Cart</button>
-                    </form>
+
+            <div class="alert alert-success" th:if="${cartSuccess}" th:text="${cartSuccess}"></div>
+            <div class="alert alert-danger" th:if="${cartError}" th:text="${cartError}"></div>
+
+            <div class="filter-pills">
+                <a th:href="@{/catalogue}" class="pill" th:classappend="${selectedCategory == null and keyword == null} ? 'active'">All</a>
+                <a th:each="cat : ${categories}" th:href="@{/catalogue(category=${cat.id})}" class="pill" th:classappend="${selectedCategory == cat.id} ? 'active'" th:text="${cat.name}"></a>
+            </div>
+
+            <p th:if="${keyword != null}" class="text-muted mb-1" th:text="'Search results for: ' + ${keyword} + ' (' + ${#lists.size(products)} + ' found)'"></p>
+
+            <div th:if="${#lists.isEmpty(products)}" class="card" style="text-align:center; padding:3rem; color:var(--text-muted)">
+                <p>No products found.</p>
+                <a th:href="@{/catalogue}" class="btn btn-primary mt-2">View all products</a>
+            </div>
+
+            <div class="product-grid" th:if="${!#lists.isEmpty(products)}">
+                <div th:each="product : ${products}" class="product-card">
+                    <div class="product-card-img">🃏</div>
+                    <div class="product-card-body">
+                        <div class="product-card-category" th:text="${product.category.name}"></div>
+                        <div class="product-card-name" th:text="${product.name}"></div>
+                        <div th:if="${product.description}" class="text-muted" style="font-size:0.8rem; margin-bottom:0.5rem; line-height:1.4" th:text="${#strings.abbreviate(product.description, 80)}"></div>
+                        <div class="product-card-price" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
+                    </div>
+                    <div class="product-card-footer flex justify-between items-center">
+                <span class="stock-badge" th:classappend="${product.stockQuantity > 10} ? 'stock-ok' : (${product.stockQuantity > 0} ? 'stock-low' : 'stock-out')" th:text="${product.stockQuantity > 10} ? 'In Stock' : (${product.stockQuantity > 0} ? 'Low Stock' : 'Out of Stock')"></span>
+                        <div class="flex gap-1">
+                            <a th:href="@{/catalogue/{id}(id=${product.id})}" class="btn btn-sm btn-outline">View</a>
+                            <form th:if="${product.available}" sec:authorize="isAuthenticated()" th:action="@{/cart/add}" method="post" style="margin:0">
+                                <input type="hidden" name="productId" th:value="${product.id}"/>
+                                <input type="hidden" name="quantity" value="1"/>
+                                <button type="submit" class="btn btn-sm btn-accent">+ Cart</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

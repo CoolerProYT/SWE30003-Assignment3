@@ -13,9 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import java.util.List;
 
-/**
- * Spring Security configuration for Shaden TCG Shop.
- */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -34,13 +31,8 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
-            Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No account: " + email));
-            return new User(
-                customer.getEmail(), customer.getPassword(),
-                customer.isEnabled(), true, true, true,
-                List.of(new SimpleGrantedAuthority(customer.getRole()))
-            );
+            Customer customer = customerRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No account: " + email));
+            return new User(customer.getEmail(), customer.getPassword(), customer.isEnabled(), true, true, true, List.of(new SimpleGrantedAuthority(customer.getRole())));
         };
     }
 

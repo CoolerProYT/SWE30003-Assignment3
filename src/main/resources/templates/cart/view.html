@@ -1,65 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Shopping Cart')}"></head>
-<body>
-<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+    <head th:replace="~{fragments/layout :: head('Shopping Cart')}"></head>
+    <body>
+        <div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
 
-<div class="page-content container" style="max-width:860px">
-    <h1 class="page-title">Shopping Cart</h1>
+        <div class="page-content container" style="max-width:860px">
+            <h1 class="page-title">Shopping Cart</h1>
 
-    <div class="alert alert-danger" th:if="${cartError}" th:text="${cartError}"></div>
+            <div class="alert alert-danger" th:if="${cartError}" th:text="${cartError}"></div>
 
-    <div th:if="${cart.isEmpty()}" class="card" style="text-align:center; padding:3rem; color:var(--text-muted)">
-        <p style="font-size:1.1rem; margin-bottom:1rem">Your cart is empty.</p>
-        <a th:href="@{/catalogue}" class="btn btn-primary">Browse Products</a>
-    </div>
+            <div th:if="${cart.isEmpty()}" class="card" style="text-align:center; padding:3rem; color:var(--text-muted)">
+                <p style="font-size:1.1rem; margin-bottom:1rem">Your cart is empty.</p>
+                <a th:href="@{/catalogue}" class="btn btn-primary">Browse Products</a>
+            </div>
 
-    <div th:if="${!cart.isEmpty()}">
-        <div class="card mb-2">
-            <div class="table-wrap">
-                <table>
-                    <thead><tr>
-                        <th>Product</th><th>Unit Price</th><th>Quantity</th><th>Subtotal</th><th>Remove</th>
-                    </tr></thead>
-                    <tbody>
-                    <tr th:each="item : ${cartItems}">
-                        <td th:text="${item.productName}" style="font-weight:500"></td>
-                        <td th:text="'$' + ${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
-                        <td>
-                            <form th:action="@{/cart/update}" method="post" class="flex items-center gap-1">
-                                <input type="hidden" name="productId" th:value="${item.productId}"/>
-                                <input name="quantity" type="number" class="form-control qty-input"
-                                       th:value="${item.quantity}" min="0" max="99"/>
-                                <button type="submit" class="btn btn-sm btn-outline">Update</button>
-                            </form>
-                        </td>
-                        <td style="font-weight:600; color:var(--primary)"
-                            th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
-                        <td>
-                            <form th:action="@{/cart/remove}" method="post">
-                                <input type="hidden" name="productId" th:value="${item.productId}"/>
-                                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
-                            </form>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div th:if="${!cart.isEmpty()}">
+                <div class="card mb-2">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${cartItems}">
+                                    <td th:text="${item.productName}" style="font-weight:500"></td>
+                                    <td th:text="'$' + ${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
+                                    <td>
+                                        <form th:action="@{/cart/update}" method="post" class="flex items-center gap-1">
+                                            <input type="hidden" name="productId" th:value="${item.productId}"/>
+                                            <input name="quantity" type="number" class="form-control qty-input" th:value="${item.quantity}" min="0" max="99"/>
+                                            <button type="submit" class="btn btn-sm btn-outline">Update</button>
+                                        </form>
+                                    </td>
+                                    <td style="font-weight:600; color:var(--primary)" th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
+                                    <td>
+                                        <form th:action="@{/cart/remove}" method="post">
+                                            <input type="hidden" name="productId" th:value="${item.productId}"/>
+                                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center flex-wrap gap-2">
+                    <a th:href="@{/catalogue}" class="btn btn-outline">← Continue Shopping</a>
+                    <div style="text-align:right">
+                        <div class="cart-total" style="display:inline-flex; gap:2rem; min-width:300px">
+                            <span class="cart-total-label">Total</span>
+                            <span class="cart-total-amount" th:text="'$' + ${#numbers.formatDecimal(cart.total, 1, 2)}"></span>
+                        </div>
+                        <div class="mt-1">
+                            <a th:href="@{/cart/checkout}" class="btn btn-accent btn-lg">Proceed to Checkout →</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="flex justify-between items-center flex-wrap gap-2">
-            <a th:href="@{/catalogue}" class="btn btn-outline">← Continue Shopping</a>
-            <div style="text-align:right">
-                <div class="cart-total" style="display:inline-flex; gap:2rem; min-width:300px">
-                    <span class="cart-total-label">Total</span>
-                    <span class="cart-total-amount" th:text="'$' + ${#numbers.formatDecimal(cart.total, 1, 2)}"></span>
-                </div>
-                <div class="mt-1">
-                    <a th:href="@{/cart/checkout}" class="btn btn-accent btn-lg">Proceed to Checkout →</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

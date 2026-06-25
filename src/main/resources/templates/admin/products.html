@@ -1,45 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Admin – Products')}"></head>
-<body>
-<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
-<div class="page-content container">
-    <div class="flex justify-between items-center mb-2">
-        <h1 class="page-title" style="margin:0">Product Management</h1>
-        <a th:href="@{/admin/products/new}" class="btn btn-accent">+ New Product</a>
-    </div>
-    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
-    <div class="alert alert-danger"  th:if="${errorMessage}"   th:text="${errorMessage}"></div>
+    <head th:replace="~{fragments/layout :: head('Admin – Products')}"></head>
+    <body>
+        <div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+        <div class="page-content container">
+            <div class="flex justify-between items-center mb-2">
+                <h1 class="page-title" style="margin:0">Product Management</h1>
+                <a th:href="@{/admin/products/new}" class="btn btn-accent">+ New Product</a>
+            </div>
+            <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert alert-danger" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
-    <div class="card">
-        <div class="table-wrap">
-            <table>
-                <thead><tr><th>#</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody>
-                <tr th:each="p : ${products}">
-                    <td th:text="${p.id}"></td>
-                    <td style="font-weight:500" th:text="${p.name}"></td>
-                    <td th:text="${p.category}"></td>
-                    <td th:text="'$' + ${#numbers.formatDecimal(p.price, 1, 2)}"></td>
-                    <td th:text="${p.stockQuantity}"></td>
-                    <td>
-                        <span th:if="${p.available}" class="badge badge-delivered">Active</span>
-                        <span th:unless="${p.available}" class="badge badge-cancelled">Inactive</span>
-                    </td>
-                    <td class="flex gap-1">
-                        <a th:href="@{/admin/products/{id}/edit(id=${p.id})}" class="btn btn-sm btn-outline">Edit</a>
-                        <form th:if="${p.available}" th:action="@{/admin/products/{id}/deactivate(id=${p.id})}" method="post">
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Deactivate this product?')">Deactivate</button>
-                        </form>
-                        <form th:unless="${p.available}" th:action="@{/admin/products/{id}/reactivate(id=${p.id})}" method="post">
-                            <button class="btn btn-sm btn-success">Reactivate</button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p : ${products}">
+                                <td th:text="${p.id}"></td>
+                                <td style="font-weight:500" th:text="${p.name}"></td>
+                                <td th:text="${p.category}"></td>
+                                <td th:text="'$' + ${#numbers.formatDecimal(p.price, 1, 2)}"></td>
+                                <td th:text="${p.stockQuantity}"></td>
+                                <td>
+                                    <span th:if="${p.available}" class="badge badge-delivered">Active</span>
+                                    <span th:unless="${p.available}" class="badge badge-cancelled">Inactive</span>
+                                </td>
+                                <td class="flex gap-1">
+                                    <a th:href="@{/admin/products/{id}/edit(id=${p.id})}" class="btn btn-sm btn-outline">Edit</a>
+                                    <form th:if="${p.available}" th:action="@{/admin/products/{id}/deactivate(id=${p.id})}" method="post">
+                                        <button class="btn btn-sm btn-danger" onclick="return confirm('Deactivate this product?')">
+                                            Deactivate
+                                        </button>
+                                    </form>
+                                    <form th:unless="${p.available}" th:action="@{/admin/products/{id}/reactivate(id=${p.id})}" method="post">
+                                        <button class="btn btn-sm btn-success">Reactivate</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

@@ -1,48 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{fragments/layout :: head(${product.name})}"></head>
-<body>
-<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+    <head th:replace="~{fragments/layout :: head(${product.name})}"></head>
+    <body>
+        <div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
 
-<div class="page-content container" style="max-width:800px">
-    <a th:href="@{/catalogue}" class="btn btn-outline btn-sm mb-2">← Back to Catalogue</a>
+        <div class="page-content container" style="max-width:800px">
+            <a th:href="@{/catalogue}" class="btn btn-outline btn-sm mb-2">← Back to Catalogue</a>
 
-    <div class="alert alert-success" th:if="${cartSuccess}" th:text="${cartSuccess}"></div>
-    <div class="alert alert-danger"  th:if="${cartError}"   th:text="${cartError}"></div>
+            <div class="alert alert-success" th:if="${cartSuccess}" th:text="${cartSuccess}"></div>
+            <div class="alert alert-danger" th:if="${cartError}" th:text="${cartError}"></div>
 
-    <div class="card">
-        <div class="card-body" style="display:grid; grid-template-columns:200px 1fr; gap:2rem; align-items:start">
-            <div style="background:linear-gradient(135deg,var(--primary),var(--primary-lt)); height:200px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:4rem">🃏</div>
-            <div>
-                <span class="badge badge-confirmed" th:text="${product.category.name}" style="margin-bottom:0.75rem; display:inline-block"></span>
-                <h1 style="font-family:'Rajdhani',sans-serif; font-size:1.75rem; font-weight:700; margin-bottom:0.5rem" th:text="${product.name}"></h1>
-                <p class="text-muted" style="margin-bottom:1rem" th:text="${product.description}"></p>
+            <div class="card">
+                <div class="card-body" style="display:grid; grid-template-columns:200px 1fr; gap:2rem; align-items:start">
+                    <div style="background:linear-gradient(135deg,var(--primary),var(--primary-lt)); height:200px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:4rem">
+                        🃏
+                    </div>
+                    <div>
+                        <span class="badge badge-confirmed" th:text="${product.category.name}" style="margin-bottom:0.75rem; display:inline-block"></span>
+                        <h1 style="font-family:'Rajdhani',sans-serif; font-size:1.75rem; font-weight:700; margin-bottom:0.5rem" th:text="${product.name}"></h1>
+                        <p class="text-muted" style="margin-bottom:1rem" th:text="${product.description}"></p>
 
-                <div style="font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:1rem"
-                     th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
+                        <div style="font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; color:var(--accent); margin-bottom:1rem" th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}"></div>
 
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="stock-badge"
-                          th:classappend="${product.stockQuantity > 10} ? 'stock-ok' : (${product.stockQuantity > 0} ? 'stock-low' : 'stock-out')"
-                          th:text="${product.stockQuantity > 10} ? 'In Stock' : (${product.stockQuantity > 0} ? 'Low Stock (' + product.stockQuantity + ' left)' : 'Out of Stock')"></span>
+                        <div class="flex items-center gap-2 mb-2">
+                    <span class="stock-badge" th:classappend="${product.stockQuantity > 10} ? 'stock-ok' : (${product.stockQuantity > 0} ? 'stock-low' : 'stock-out')" th:text="${product.stockQuantity > 10} ? 'In Stock' : (${product.stockQuantity > 0} ? 'Low Stock (' + product.stockQuantity + ' left)' : 'Out of Stock')"></span>
+                        </div>
+
+                        <form th:if="${product.available}" sec:authorize="isAuthenticated()" th:action="@{/cart/add}" method="post" class="flex items-center gap-1">
+                            <input type="hidden" name="productId" th:value="${product.id}"/>
+                            <label class="form-label" style="margin:0">Qty:</label>
+                            <input name="quantity" type="number" class="form-control qty-input" value="1" min="1" th:max="${product.stockQuantity}"/>
+                            <button type="submit" class="btn btn-accent btn-lg">Add to Cart</button>
+                        </form>
+
+                        <p th:if="!${product.available}" class="alert alert-warning mt-1">This product is currently
+                            unavailable.
+                        </p>
+                        <p sec:authorize="!isAuthenticated()" class="text-muted mt-1" style="font-size:0.875rem">
+                            <a th:href="@{/auth/login}" style="color:var(--primary); font-weight:600">Sign in</a> to add to cart.
+                        </p>
+                    </div>
                 </div>
-
-                <form th:if="${product.available}" sec:authorize="isAuthenticated()"
-                      th:action="@{/cart/add}" method="post" class="flex items-center gap-1">
-                    <input type="hidden" name="productId" th:value="${product.id}"/>
-                    <label class="form-label" style="margin:0">Qty:</label>
-                    <input name="quantity" type="number" class="form-control qty-input" value="1"
-                           min="1" th:max="${product.stockQuantity}"/>
-                    <button type="submit" class="btn btn-accent btn-lg">Add to Cart</button>
-                </form>
-
-                <p th:if="!${product.available}" class="alert alert-warning mt-1">This product is currently unavailable.</p>
-                <p sec:authorize="!isAuthenticated()" class="text-muted mt-1" style="font-size:0.875rem">
-                    <a th:href="@{/auth/login}" style="color:var(--primary); font-weight:600">Sign in</a> to add to cart.
-                </p>
             </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

@@ -7,28 +7,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDate;
 
-/** Order history, confirmation, detail, and admin order/shipment management. */
 @Controller
 public class OrderController {
-
     private final OrderProcessor orderProcessor;
     private final CustomerService customerService;
     private final ShipmentManager shipmentManager;
     private final SalesReportGenerator salesReportGenerator;
 
-    public OrderController(OrderProcessor orderProcessor,
-                           CustomerService customerService,
-                           ShipmentManager shipmentManager,
-                           SalesReportGenerator salesReportGenerator) {
-        this.orderProcessor       = orderProcessor;
-        this.customerService      = customerService;
-        this.shipmentManager      = shipmentManager;
+    public OrderController(OrderProcessor orderProcessor, CustomerService customerService, ShipmentManager shipmentManager, SalesReportGenerator salesReportGenerator) {
+        this.orderProcessor = orderProcessor;
+        this.customerService = customerService;
+        this.shipmentManager = shipmentManager;
         this.salesReportGenerator = salesReportGenerator;
     }
-
-    // ── Customer ───────────────────────────────────────────────────────
 
     @GetMapping("/orders")
     public String history(Authentication auth, Model model) {
@@ -46,13 +40,14 @@ public class OrderController {
     @GetMapping("/orders/{id}")
     public String detail(@PathVariable Long id, Authentication auth, Model model) {
         Order order = orderProcessor.getById(id);
-        boolean isAdmin = auth.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         if (!isAdmin && !order.getCustomer().getEmail().equals(auth.getName()))
             return "redirect:/orders";
         model.addAttribute("order", order);
-        try { model.addAttribute("shipment", shipmentManager.getByOrderId(id)); }
-        catch (IllegalArgumentException ignored) {}
+        try {
+            model.addAttribute("shipment", shipmentManager.getByOrderId(id));
+        } catch (IllegalArgumentException ignored) {
+        }
         return "cart/order-detail";
     }
 
@@ -61,19 +56,17 @@ public class OrderController {
         try {
             orderProcessor.cancelOrder(id);
             ra.addFlashAttribute("successMessage", "Order #" + id + " cancelled.");
-        } catch (Exception e) { ra.addFlashAttribute("errorMessage", e.getMessage()); }
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/orders/" + id;
     }
-
-    // ── Admin orders ───────────────────────────────────────────────────
 
     @GetMapping("/admin/orders")
     public String adminOrders(Model model) {
         model.addAttribute("orders", orderProcessor.getAllOrders());
         return "admin/orders";
     }
-
-    // ── Admin shipments ────────────────────────────────────────────────
 
     @GetMapping("/admin/shipments")
     public String adminShipments(Model model) {
@@ -88,12 +81,13 @@ public class OrderController {
     }
 
     @PostMapping("/admin/shipments/{id}/pack")
-    public String pack(@PathVariable Long id,
-                       @RequestParam(required = false) String packageNotes,
-                       RedirectAttributes ra) {
-        try { shipmentManager.markPacked(id, packageNotes);
-              ra.addFlashAttribute("successMessage", "Marked as packed."); }
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", e.getMessage()); }
+    public String pack(@PathVariable Long id, @RequestParam(required = false) String packageNotes, RedirectAttributes ra) {
+        try {
+            shipmentManager.markPacked(id, packageNotes);
+            ra.addFlashAttribute("successMessage", "Marked as packed.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/shipments/" + id;
     }
 
@@ -103,17 +97,23 @@ public class OrderController {
                            @RequestParam String trackingNumber,
                            @RequestParam(required = false) LocalDate estimatedDelivery,
                            RedirectAttributes ra) {
-        try { shipmentManager.markDispatched(id, courierName, trackingNumber, estimatedDelivery);
-              ra.addFlashAttribute("successMessage", "Shipment dispatched."); }
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", e.getMessage()); }
+        try {
+            shipmentManager.markDispatched(id, courierName, trackingNumber, estimatedDelivery);
+            ra.addFlashAttribute("successMessage", "Shipment dispatched.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/shipments/" + id;
     }
 
     @PostMapping("/admin/shipments/{id}/deliver")
     public String deliver(@PathVariable Long id, RedirectAttributes ra) {
-        try { shipmentManager.markDelivered(id);
-              ra.addFlashAttribute("successMessage", "Marked as delivered."); }
-        catch (Exception e) { ra.addFlashAttribute("errorMessage", e.getMessage()); }
+        try {
+            shipmentManager.markDelivered(id);
+            ra.addFlashAttribute("successMessage", "Marked as delivered.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/shipments/" + id;
     }
 

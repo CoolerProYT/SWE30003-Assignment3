@@ -9,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/** Customer account profile management. */
 @Controller
 @RequestMapping("/account")
 public class CustomerController {
@@ -36,14 +35,7 @@ public class CustomerController {
     }
 
     @PostMapping("/update")
-    public String updateProfile(Authentication auth,
-                                @RequestParam String fullName,
-                                @RequestParam String phone,
-                                @RequestParam String street,
-                                @RequestParam String suburb,
-                                @RequestParam String state,
-                                @RequestParam String postcode,
-                                RedirectAttributes ra) {
+    public String updateProfile(Authentication auth, @RequestParam String fullName, @RequestParam String phone, @RequestParam String street, @RequestParam String suburb, @RequestParam String state, @RequestParam String postcode, RedirectAttributes ra) {
         try {
             Customer c = current(auth);
             customerService.updateProfile(c.getId(), fullName, phone);
@@ -56,11 +48,7 @@ public class CustomerController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(Authentication auth,
-                                 @RequestParam String currentPassword,
-                                 @RequestParam String newPassword,
-                                 @RequestParam String confirmNewPassword,
-                                 RedirectAttributes ra) {
+    public String changePassword(Authentication auth, @RequestParam String currentPassword, @RequestParam String newPassword, @RequestParam String confirmNewPassword, RedirectAttributes ra) {
         if (!newPassword.equals(confirmNewPassword)) {
             ra.addFlashAttribute("passwordError", "New passwords do not match.");
             return "redirect:/account";

@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.math.BigDecimal;
 
-/** Product catalogue browsing and admin CRUD. Uses A2's ProductCatalogue service. */
 @Controller
 public class CatalogueController {
-
     private final ProductCatalogue productCatalogue;
 
     public CatalogueController(ProductCatalogue productCatalogue) {
@@ -18,12 +16,8 @@ public class CatalogueController {
     }
 
     @GetMapping({"/", "/catalogue"})
-    public String catalogue(@RequestParam(required = false) String keyword,
-                            @RequestParam(required = false) Long category,
-                            Model model) {
-        model.addAttribute("products",
-            category != null ? productCatalogue.getByCategory(category)
-            : productCatalogue.search(keyword));
+    public String catalogue(@RequestParam(required = false) String keyword, @RequestParam(required = false) Long category, Model model) {
+        model.addAttribute("products", category != null ? productCatalogue.getByCategory(category) : productCatalogue.search(keyword));
         model.addAttribute("categories",   productCatalogue.getAllCategories());
         model.addAttribute("keyword",      keyword);
         model.addAttribute("selectedCategory", category);
@@ -35,8 +29,6 @@ public class CatalogueController {
         model.addAttribute("product", productCatalogue.getProductById(id));
         return "catalogue/detail";
     }
-
-    // ── Admin ──────────────────────────────────────────────────────────
 
     @GetMapping("/admin/products")
     public String adminProducts(Model model) {
@@ -51,13 +43,13 @@ public class CatalogueController {
     }
 
     @PostMapping("/admin/products/new")
-    public String create(@RequestParam String name, @RequestParam String description,
-                         @RequestParam BigDecimal price, @RequestParam int stockQuantity,
-                         @RequestParam Long categoryId, RedirectAttributes ra) {
+    public String create(@RequestParam String name, @RequestParam String description, @RequestParam BigDecimal price, @RequestParam int stockQuantity, @RequestParam Long categoryId, RedirectAttributes ra) {
         try {
             productCatalogue.createProduct(name, description, price, stockQuantity, categoryId);
             ra.addFlashAttribute("successMessage", "Product created.");
-        } catch (Exception e) { ra.addFlashAttribute("errorMessage", e.getMessage()); }
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", e.getMessage());
+        }
         return "redirect:/admin/products";
     }
 
@@ -69,10 +61,7 @@ public class CatalogueController {
     }
 
     @PostMapping("/admin/products/{id}/edit")
-    public String update(@PathVariable Long id, @RequestParam String name,
-                         @RequestParam String description, @RequestParam BigDecimal price,
-                         @RequestParam int stockQuantity, @RequestParam Long categoryId,
-                         RedirectAttributes ra) {
+    public String update(@PathVariable Long id, @RequestParam String name, @RequestParam String description, @RequestParam BigDecimal price, @RequestParam int stockQuantity, @RequestParam Long categoryId, RedirectAttributes ra) {
         try {
             productCatalogue.updateProduct(id, name, description, price, stockQuantity, categoryId);
             ra.addFlashAttribute("successMessage", "Product updated.");

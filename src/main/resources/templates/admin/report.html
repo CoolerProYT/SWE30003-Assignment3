@@ -1,93 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Sales Report')}"></head>
-<body>
-<div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
-<div class="page-content container" style="max-width:860px">
-    <div class="flex justify-between items-center mb-2">
-        <h1 class="page-title" style="margin:0">Sales Report</h1>
-        <span class="badge badge-confirmed" th:text="${report.reportType}"></span>
-    </div>
+    <head th:replace="~{fragments/layout :: head('Sales Report')}"></head>
+    <body>
+        <div th:replace="~{fragments/layout :: navbar(${cart})}"></div>
+        <div class="page-content container" style="max-width:860px">
+            <div class="flex justify-between items-center mb-2">
+                <h1 class="page-title" style="margin:0">Sales Report</h1>
+                <span class="badge badge-confirmed" th:text="${report.reportType}"></span>
+            </div>
 
-    <!-- Custom date range form -->
-    <div class="card mb-2">
-        <div class="card-body">
-            <form th:action="@{/admin/reports}" method="get" class="flex gap-2 items-center flex-wrap">
-                <div class="form-group" style="margin:0">
-                    <label class="form-label">From</label>
-                    <input name="start" type="date" class="form-control"
-                           th:value="${#temporals.format(report.periodStart, 'yyyy-MM-dd')}"/>
+            <!-- Custom date range form -->
+            <div class="card mb-2">
+                <div class="card-body">
+                    <form th:action="@{/admin/reports}" method="get" class="flex gap-2 items-center flex-wrap">
+                        <div class="form-group" style="margin:0">
+                            <label class="form-label">From</label>
+                            <input name="start" type="date" class="form-control"
+                                   th:value="${#temporals.format(report.periodStart, 'yyyy-MM-dd')}"/>
+                        </div>
+                        <div class="form-group" style="margin:0">
+                            <label class="form-label">To</label>
+                            <input name="end" type="date" class="form-control"
+                                   th:value="${#temporals.format(report.periodEnd, 'yyyy-MM-dd')}"/>
+                        </div>
+                        <div style="padding-top:1.4rem">
+                            <button type="submit" class="btn btn-primary btn-sm">Generate</button>
+                            <a th:href="@{/admin/reports}" class="btn btn-outline btn-sm">This Month</a>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group" style="margin:0">
-                    <label class="form-label">To</label>
-                    <input name="end" type="date" class="form-control"
-                           th:value="${#temporals.format(report.periodEnd, 'yyyy-MM-dd')}"/>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="grid-3 mb-2">
+                <div class="card">
+                    <div class="card-body" style="text-align:center">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)"
+                             th:text="'$' + ${#numbers.formatDecimal(report.totalRevenue, 1, 2)}"></div>
+                        <div class="text-muted" style="font-size:.85rem">Total Revenue</div>
+                    </div>
                 </div>
-                <div style="padding-top:1.4rem">
-                    <button type="submit" class="btn btn-primary btn-sm">Generate</button>
-                    <a th:href="@{/admin/reports}" class="btn btn-outline btn-sm">This Month</a>
+                <div class="card">
+                    <div class="card-body" style="text-align:center">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--primary)"
+                             th:text="${report.totalOrderCount}"></div>
+                        <div class="text-muted" style="font-size:.85rem">Orders</div>
+                    </div>
                 </div>
-            </form>
-        </div>
-    </div>
+                <div class="card">
+                    <div class="card-body" style="text-align:center">
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--gold)"
+                             th:text="${report.totalUnitsSold}"></div>
+                        <div class="text-muted" style="font-size:.85rem">Units Sold</div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Summary cards -->
-    <div class="grid-3 mb-2">
-        <div class="card">
-            <div class="card-body" style="text-align:center">
-                <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--accent)"
-                     th:text="'$' + ${#numbers.formatDecimal(report.totalRevenue, 1, 2)}"></div>
-                <div class="text-muted" style="font-size:.85rem">Total Revenue</div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body" style="text-align:center">
-                <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--primary)"
-                     th:text="${report.totalOrderCount}"></div>
-                <div class="text-muted" style="font-size:.85rem">Orders</div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-body" style="text-align:center">
-                <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--gold)"
-                     th:text="${report.totalUnitsSold}"></div>
-                <div class="text-muted" style="font-size:.85rem">Units Sold</div>
-            </div>
-        </div>
-    </div>
+            <!-- Period -->
+            <p class="text-muted mb-2" style="font-size:.875rem">
+                Period:
+                <strong th:text="${#temporals.format(report.periodStart, 'dd MMM yyyy')}"></strong>
+                —
+                <strong th:text="${#temporals.format(report.periodEnd, 'dd MMM yyyy')}"></strong>
+                &nbsp;·&nbsp; Generated:
+                <span th:text="${#temporals.format(report.generatedAt, 'dd MMM yyyy HH:mm')}"></span>
+            </p>
 
-    <!-- Period -->
-    <p class="text-muted mb-2" style="font-size:.875rem">
-        Period:
-        <strong th:text="${#temporals.format(report.periodStart, 'dd MMM yyyy')}"></strong>
-        —
-        <strong th:text="${#temporals.format(report.periodEnd, 'dd MMM yyyy')}"></strong>
-        &nbsp;·&nbsp; Generated: <span th:text="${#temporals.format(report.generatedAt, 'dd MMM yyyy HH:mm')}"></span>
-    </p>
-
-    <!-- Top products -->
-    <div class="card">
-        <div class="card-header">Top Products by Units Sold</div>
-        <div class="card-body" style="padding:0">
-            <div th:if="${#lists.isEmpty(report.topProducts)}"
-                 style="padding:1.5rem;text-align:center;color:var(--text-muted)">
-                No orders in this period.
-            </div>
-            <div class="table-wrap" th:unless="${#lists.isEmpty(report.topProducts)}">
-                <table>
-                    <thead><tr><th>#</th><th>Product</th><th>Units Sold</th><th>Revenue</th></tr></thead>
-                    <tbody>
-                    <tr th:each="ps,i : ${report.topProducts}">
-                        <td th:text="${i.index + 1}"></td>
-                        <td th:text="${ps.productName}"></td>
-                        <td th:text="${ps.unitsSold}"></td>
-                        <td th:text="'$' + ${#numbers.formatDecimal(ps.revenue, 1, 2)}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+            <!-- Top products -->
+            <div class="card">
+                <div class="card-header">Top Products by Units Sold</div>
+                <div class="card-body" style="padding:0">
+                    <div th:if="${#lists.isEmpty(report.topProducts)}"
+                         style="padding:1.5rem;text-align:center;color:var(--text-muted)">
+                        No orders in this period.
+                    </div>
+                    <div class="table-wrap" th:unless="${#lists.isEmpty(report.topProducts)}">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th>Units Sold</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ps,i : ${report.topProducts}">
+                                    <td th:text="${i.index + 1}"></td>
+                                    <td th:text="${ps.productName}"></td>
+                                    <td th:text="${ps.unitsSold}"></td>
+                                    <td th:text="'$' + ${#numbers.formatDecimal(ps.revenue, 1, 2)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>

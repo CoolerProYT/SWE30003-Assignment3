@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
 public class GlobalModelAdvice {
-
     private static final String SESSION_CART  = "cart";
     private static final String SESSION_GUEST = "guestSession";
 
