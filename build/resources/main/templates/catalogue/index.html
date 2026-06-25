@@ -27,7 +27,7 @@
         <a th:each="cat : ${categories}"
            th:href="@{/catalogue(category=${cat.id})}"
            class="pill"
-           th:classappend="${selectedCategory == cat} ? 'active'"
+           th:classappend="${selectedCategory == cat.id} ? 'active'"
            th:text="${cat.name}"></a>
     </div>
 

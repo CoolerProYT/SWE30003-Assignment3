@@ -127,7 +127,7 @@ public class OrderProcessor {
     /** Returns a specific order by ID. */
     @Transactional(readOnly = true)
     public Order getById(Long orderId) {
-        return orderRepository.findById(orderId)
+        return orderRepository.findByIdWithCustomer(orderId)
             .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
     }
 

@@ -15,9 +15,7 @@
         <a th:href="@{/catalogue}" th:classappend="${currentPage == 'catalogue'} ? 'active'">Catalogue</a>
         <a sec:authorize="isAuthenticated()" th:href="@{/orders}" th:classappend="${currentPage == 'orders'} ? 'active'">My Orders</a>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/products}">Products</a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/orders}">Orders</a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/products}">Products</a>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/orders}">Orders</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/orders}">Order Management</a>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/shipments}">Shipments</a>
         <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/reports}">Reports</a>
     </div>

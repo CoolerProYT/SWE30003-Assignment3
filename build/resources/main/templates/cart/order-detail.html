@@ -42,7 +42,7 @@
                 <p><strong>Address:</strong> <span th:text="${order.deliveryAddress}"></span></p>
                 <p class="mt-1"><strong>Placed:</strong>
                     <span th:text="${#temporals.format(order.placedAt, 'dd MMM yyyy HH:mm')}"></span></p>
-                <p class="mt-1"><strong>Payment:</strong> <span class="text-muted" th:text="${order.paymentNote}"></span></p>
+                <p class="mt-1"><strong>Payment:</strong> <span class="text-muted" th:text="${order.payment != null ? order.payment.note : 'No payment recorded'}"></span></p>
             </div>
         </div>
 

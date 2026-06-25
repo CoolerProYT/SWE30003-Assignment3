@@ -26,7 +26,7 @@ public class CatalogueController {
             : productCatalogue.search(keyword));
         model.addAttribute("categories",   productCatalogue.getAllCategories());
         model.addAttribute("keyword",      keyword);
-        model.addAttribute("selectedCat",  category);
+        model.addAttribute("selectedCategory", category);
         return "catalogue/index";
     }
 
